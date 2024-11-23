@@ -41,7 +41,7 @@ const SeverityCircle = ({ value }: { value: number }) => {
           strokeWidth="4"
           fill="none"
           strokeDasharray={`${strokeDasharray} ${circumference}`}
-          strokeDashoffset={strokeDashoffset} // Controls the fill
+          strokeDashoffset={0} // Controls the fill
           strokeLinecap="round"
           rotation="-90" // Rotate to start from the top (12 o'clock position)
           origin="20, 20" // This sets the rotation origin to the center of the circle

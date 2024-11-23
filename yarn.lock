@@ -4262,6 +4262,13 @@ expo-asset@~10.0.10:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
+expo-camera@^16.0.7:
+  version "16.0.7"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-16.0.7.tgz#45e73a86c63106639cf1ff611a365d79e9d5842e"
+  integrity sha512-F4msGjXMa2WJ6Gest9HVA8i0txwfuwNSbGtlbgcTr5givNWfxIwx5DuW+i7w+Xstv2YqSJL3qFAAIZgHfygHTQ==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-constants@~16.0.0:
   version "16.0.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-16.0.2.tgz#eb5a1bddb7308fd8cadac8fc44decaf4784cac5e"
@@ -7686,6 +7693,11 @@ react-native-helmet-async@2.0.4:
     invariant "^2.2.4"
     react-fast-compare "^3.2.2"
     shallowequal "^1.1.0"
+
+react-native-image-picker@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz#383849d1953caf4578874a1f5e5dd11c737bd5cd"
+  integrity sha512-b5y5nP60RIPxlAXlptn2QwlIuZWCUDWa/YPUVjgHc0Ih60mRiOg1PSzf0IjHSLeOZShCpirpvSPGnDExIpTRUg==
 
 react-native-reanimated@~3.10.1:
   version "3.10.1"
