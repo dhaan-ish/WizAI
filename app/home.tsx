@@ -1,9 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View, Image} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity} from "react-native";
 import { Stack } from "expo-router";
 import SeverityCircle from "@/components/SeverityCircle";
+import { useNavigation } from "expo-router";
 
 const home = () => {
+    const navigation = useNavigation();
+
     return(
         <View className="flex flex-col">
             <View className="h-[50vh] bg-black flex justify-center items-center">
@@ -34,63 +37,107 @@ const home = () => {
                         </Text>
                     </View>
             </View>
-            <View className="h-[50vh] bg-white flex justify-start gap-2 flex-col items-center pt-[15%]">
-                <View className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2">
-                    <View className="flex justify-center flex-row gap-2 items-center">
+            <View className="h-[50vh] bg-white flex justify-start gap-1 flex-col items-center pt-[15%]">
+                <View className="">
+                    <TouchableOpacity
+                        className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                        onPress={() => navigation.navigate('patient', {name : "Dhaanish Ahamed M"})} // Navigate to the "patient" screen
+                    >
+                        <View className="flex justify-center flex-row gap-2 items-center">
                         <Image
-                            source={{ uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png' }}
+                            source={{
+                            uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png',
+                            }}
                             className="h-[40px] w-[40px]"
                         />
-                        <Text className="font-medium text-[16px]">
-                            Patient 1
-                        </Text>
-                    </View>
-                    <View className="flex justify-center items-center">
-                        <SeverityCircle value={6} />
-                    </View>
-                </View>
-                <View className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2">
-                    <View className="flex justify-center flex-row gap-2 items-center">
-                        <Image
-                            source={{ uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png' }}
-                            className="h-[40px] w-[40px]"
-                        />
-                        <Text className="font-medium text-[16px]">
-                            Patient 1
-                        </Text>
-                    </View>
-                    <View className="flex justify-center items-center">
-                        <SeverityCircle value={75} />
-                    </View>
-                </View>
-                <View className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2">
-                    <View className="flex justify-center flex-row gap-2 items-center">
-                        <Image
-                            source={{ uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png' }}
-                            className="h-[40px] w-[40px]"
-                        />
-                        <Text className="font-medium text-[16px]">
-                            Patient 1
-                        </Text>
-                    </View>
-                    <View className="flex justify-center items-center">
+                        <Text className="font-medium text-[16px]">Dhaanish Ahamed M</Text>
+                        </View>
+                        <View className="flex justify-center items-center">
                         <SeverityCircle value={100} />
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                <View className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2">
-                    <View className="flex justify-center flex-row gap-2 items-center">
+
+                <View className="">
+                    <TouchableOpacity
+                        className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                        onPress={() => navigation.navigate('patient', {name : "Haseen Mathar Y"})} // Navigate to the "patient" screen
+                    >
+                        <View className="flex justify-center flex-row gap-2 items-center">
                         <Image
-                            source={{ uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png' }}
+                            source={{
+                            uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png',
+                            }}
                             className="h-[40px] w-[40px]"
                         />
-                        <Text className="font-medium text-[16px]">
-                            Patient 1
-                        </Text>
-                    </View>
-                    <View className="flex justify-center items-center">
+                        <Text className="font-medium text-[16px]">Haseen Mathar Y</Text>
+                        </View>
+                        <View className="flex justify-center items-center">
                         <SeverityCircle value={55} />
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
+
+                <View className="">
+                    <TouchableOpacity
+                        className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                        onPress={() => navigation.navigate('patient', {name : "Gokul Krishna R"})} // Navigate to the "patient" screen
+                    >
+                        <View className="flex justify-center flex-row gap-2 items-center">
+                        <Image
+                            source={{
+                            uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png',
+                            }}
+                            className="h-[40px] w-[40px]"
+                        />
+                        <Text className="font-medium text-[16px]">Gokul Krishna R</Text>
+                        </View>
+                        <View className="flex justify-center items-center">
+                        <SeverityCircle value={6} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                
+                <View className="">
+                    <TouchableOpacity
+                        className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                        onPress={() => navigation.navigate('patient', {name : "Adam H Dhayfa Umar"})} // Navigate to the "patient" screen
+                    >
+                        <View className="flex justify-center flex-row gap-2 items-center">
+                        <Image
+                            source={{
+                            uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png',
+                            }}
+                            className="h-[40px] w-[40px]"
+                        />
+                        <Text className="font-medium text-[16px]">Adam H Dhayfa Umar</Text>
+                        </View>
+                        <View className="flex justify-center items-center">
+                        <SeverityCircle value={60} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                <View className="">
+                    <TouchableOpacity
+                        className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                        onPress={() => navigation.navigate('patient', {name : "Nafeela"})} // Navigate to the "patient" screen
+                    >
+                        <View className="flex justify-center flex-row gap-2 items-center">
+                        <Image
+                            source={{
+                            uri: 'https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png',
+                            }}
+                            className="h-[40px] w-[40px]"
+                        />
+                        <Text className="font-medium text-[16px]">Nafeela</Text>
+                        </View>
+                        <View className="flex justify-center items-center">
+                        <SeverityCircle value={60} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                
             </View>
         </View>
     )

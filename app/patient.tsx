@@ -8,6 +8,7 @@ import {
   Linking,
 } from "react-native";
 import { Stack } from "expo-router";
+import { useRoute } from '@react-navigation/native';
 import CalendarWithDots from "@/components/Calendat";
 import PatientSummary from "@/components/PatientSummary";
 const phoneNumber = "+91 9876543210";
@@ -24,13 +25,15 @@ const handleLocationPress = () => {
 };
 
 const patient = () => {
+  const route = useRoute();
+  const {name} = route.params;
   return (
     <View className="flex flex-col">
       <View className="h-[50vh] bg-black flex justify-between pt-20 pb-5 px-10 flex-col items-center">
         <View className="flex justify-between items-center flex-row gap-20">
           <View className="flex justify-center gap-3 items-start flex-col ">
             <Text className="text-white font-normal text-[20px]">
-              Haseen Mathar Y
+              {name}
             </Text>
             <Text className="text-white font-normal text-[14px]">O +ve</Text>
             <Text className="text-white font-normal text-[14px]">24 Years</Text>

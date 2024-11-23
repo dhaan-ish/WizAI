@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
+import { Stack } from 'expo-router';
 
 const PatientSummary = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Define the full patient summary
-  const summary = `Haseen Mathar, a 20-year-old male, was diagnosed with HIV in early 2023 after experiencing symptoms such as prolonged fatigue, fever, and unexplained weight loss. Upon further testing, it was confirmed that he had progressed to AIDS, as indicated by a low CD4+ count and a high viral load. Haseen began antiretroviral therapy (ART) immediately following his diagnosis, which has been effective in reducing his viral load. He regularly undergoes lab tests to monitor his condition, including CD4+ count and viral load levels. Despite some challenges with opportunistic infections, such as pneumonia and oral thrush, Haseen has managed to stay relatively stable with his treatment plan. He has also received psychological support to cope with the emotional toll of living with HIV/AIDS, as well as nutritional counseling to maintain his overall health. His healthcare team continues to monitor his condition closely, aiming to prevent further progression of the disease and improve his quality of life.`;
+  const handleNavigation = () => {
 
-  // Truncate summary to a defined length
+  }
+
+  
+
+  const summary = `Haseen Mathar, a 20-year-old male, was diagnosed with HIV in early 2023 after experiencing symptoms such as prolonged fatigue, fever, and unexplained weight loss. Upon further testing, it was confirmed that he had progressed to AIDS, as indicated by a low CD4+ count and a high viral load. Haseen began antiretroviral therapy (ART) immediately following his diagnosis, which has been effective in reducing his viral load. He regularly undergoes lab tests to monitor his condition, including CD4+ count and viral load levels. Despite some challenges with opportunistic infections, such as pneumonia and oral thrush, Haseen has managed to stay relatively stable with his treatment plan. He has also received psychological support to cope with the emotional toll of living with HIV/AIDS, as well as nutritional counseling to maintain his overall health. His healthcare team continues to monitor his condition closely, aiming to prevent further progression of the disease and improve his quality of life.`;
   const truncatedSummary = summary.length > 150 ? `${summary.substring(0, 150)}...` : summary;
 
   return (
@@ -18,8 +22,6 @@ const PatientSummary = () => {
       <Text onPress={() => setIsModalVisible(true)} className="text-black">
         {truncatedSummary}
       </Text>
-
-      {/* Modal to display the full summary */}
       <Modal
         visible={isModalVisible}
         transparent={true}
