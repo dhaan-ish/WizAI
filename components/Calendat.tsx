@@ -2,26 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert, Image, StyleSheet, TextInput, Button } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import axios from 'axios';
 
-const CalendarWithDots = () => {
+const CalendarWithDots = ({markedDates}) => {
+  console.log(markedDates);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [todayModal, setShowTodayModal] = useState(false);
 
-  const markedDates = {
-    '2024-11-18': {
-      selected: true,
-      marked: true,
-      dotColor: 'blue',
-      selectedColor: 'blue',
-    },
-    '2024-11-04': {
-      selected: true,
-      marked: true,
-      dotColor: 'blue',
-      selectedColor: 'blue',
-    },
+  const sendData = async () => {
+    let s = await getBase64(file);
+    console.log(s.length + "-> length");
+    try {
+      // Send POST request with the array of texts to the Flask server
+      const response = await axios.post('http://172.16.11.217:5000/receive_texts', {
+        unique_id : 1,
+        base64_image: s,
+        doctor_summary : text,
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   };
 
   // Get today's date
@@ -43,9 +48,9 @@ const CalendarWithDots = () => {
   };
 
     const [file, setFile] = useState([]);
+    // let base64String = [];
     useEffect(() => {
-      console.log(file);
-
+      console.log(file.length);
     }, [file]);
     const [error, setError] = useState(null);
 
@@ -83,10 +88,35 @@ const CalendarWithDots = () => {
             }
         }
     };
+    
+    const getBase64 = async (filePaths) => {
+      // const filePath = 'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fexpo-nativewind-typescript-boilerplate-7563ba1f-38e2-43e4-95cd-c2cde682f18a/ImagePicker/01b4a2cd-304d-4ca9-9921-d6755b43e2f2.jpeg';
+      let base64String = [];
+      for (let filePath of filePaths){
+        try {
+          // Read the file as a Base64 string
+          const base64Image = await FileSystem.readAsStringAsync(filePath, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          // console.log(base64Image);
+          base64String.push(base64Image);
+          // console.log(base64String.length);
+          // setBase64String(base64Image); // Set the Base64 string in the state
+          console.log(base64Image); // Log the Base64 string
+        } catch (error) {
+          console.error('Error converting file to base64:', error);
+        }
+      }
+      console.log(base64String.length);
+      return base64String;
+      
+    };
+
     const [text, setText] = useState('');
     const handleSubmit = () => {
       alert(`Submitted Text: ${text}\nSelected Image: ${file.length}`);
       setShowTodayModal(false);
+      sendData();
     };
   // Handle text change
   const handleTextChange = (input) => {
@@ -118,9 +148,7 @@ const CalendarWithDots = () => {
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="w-4/5 p-6 bg-white rounded-lg items-center">
             <Text className="text-xl font-bold mb-4">{selectedDate}</Text>
-            <Text className="text-base mb-3 text-center">Blood Group - O+ve</Text>
-            <Text className="text-base mb-3 text-center">Sugar - 100</Text>
-            <Text className="text-base mb-6 text-center">BP - 120/80</Text>
+            {/* <Text className="text-base mb-3 text-center">{markedDates[selectedDate].summary}</Text> */}
             <TouchableOpacity
               className="bg-blue-500 py-2 px-6 rounded-lg"
               onPress={() => setIsModalVisible(false)}

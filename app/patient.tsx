@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,35 +12,153 @@ import { Stack } from "expo-router";
 import { useRoute } from '@react-navigation/native';
 import CalendarWithDots from "@/components/Calendat";
 import PatientSummary from "@/components/PatientSummary";
-const phoneNumber = "+91 9876543210";
-const latitude = "13.095297792177373";
-const longitude = "80.28600825704999";
 
-const handlePhonePress = () => {
-  Linking.openURL(`tel:${phoneNumber}`);
-};
+import supabase from "@/utils/supabase";
+import { getFreeDiskStorageAsync } from "expo-file-system";
 
-const handleLocationPress = () => {
-  const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-  Linking.openURL(url);
-};
+interface MarkedDate {
+  selected: boolean;
+  marked: boolean;
+  dotColor: string;
+  selectedColor: string;
+  summary: string; // Summary is always a string, even if empty
+}
+
+interface MarkedDates {
+  [date: string]: MarkedDate;
+}
 
 const patient = () => {
   const route = useRoute();
-  const {name} = route.params;
+  const {id} = route.params;
+  const [patientRecords, setPatientRecords] = useState({name : "", dob : "", blood_group : "", phone_number : "", latitude : "", longitude : "",summary : ""});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('patients')
+          .select('*')
+          .eq('unique_id', id);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const patient = data[0];
+          console.log(patient); // This should print the patient object
+          setPatientRecords({
+            name: patient.name,
+            dob: patient.dob,
+            blood_group: patient.blood_group,
+            phone_number: patient.phone_number,
+            latitude: patient.latitude,
+            longitude: patient.longitude,
+            gender: patient.gender,
+            photo_url: patient.photo_url,
+            summary : patient.last_summary
+          });
+        }
+      } catch (err) {
+        setError('Error fetching data');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatientData();
+  }, [id]);
+
+  // Log the patientRecords after the state update
+  useEffect(() => {
+    console.log(patientRecords);
+  }, [patientRecords]);
+
+
+  const phoneNumber = "+91 9876543210";
+  // const latitude = "13.095297792177373";
+  // const longitude = "80.28600825704999";
+  const handlePhonePress = () => {
+    Linking.openURL(`tel:${patientRecords.phone_number}`);
+  };
+  
+  const [markedDates, setMarkedDates] = useState<MarkedDates>({})
+
+  useEffect(() => {
+    const fetchMarkedDates = async () => {
+      try {
+        // Fetch data from the 'patient_records' table where unique_id = id
+        const { data, error } = await supabase
+          .from('patient_records')
+          .select('date, summary')
+          .eq('unique_id', id);  // Filter by unique_id
+
+        if (error) {
+          console.error("Error fetching data:", error);
+          return;
+        }
+
+        // Transform the fetched data into the format for markedDates
+        const formattedDates = {};
+
+        data.forEach((record) => {
+          const formattedDate = new Date(record.date).toISOString().split('T')[0]; // Format to 'yyyy-mm-dd'
+
+          formattedDates[formattedDate] = {
+            selected: true,
+            marked: true,
+            dotColor: 'blue',
+            selectedColor: 'blue',
+            summary: record.summary || '', // Empty string if no summary
+          };
+        });
+        // console.log(formattedDates);
+
+        // Set the state with the formatted dates
+        setMarkedDates(formattedDates);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchMarkedDates();
+  }, [id]);
+  
+  const handleLocationPress = () => {
+    const url = `https://www.google.com/maps?q=${patientRecords.latitude},${patientRecords.longitude}`;
+    Linking.openURL(url);
+  };
+  const getAge = (dob) => {
+    const birthDate = new Date(dob);
+    const currentDate = new Date();
+
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+
+    if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    // Format current date as yyyy-mm-dd
+    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    
+    return age;
+  };
+
   return (
     <View className="flex flex-col">
       <View className="h-[50vh] bg-black flex justify-between pt-20 pb-5 px-10 flex-col items-center">
         <View className="flex justify-between items-center flex-row gap-20">
           <View className="flex justify-center gap-3 items-start flex-col ">
             <Text className="text-white font-normal text-[20px]">
-              {name}
+            {patientRecords.name}
             </Text>
-            <Text className="text-white font-normal text-[14px]">O +ve</Text>
-            <Text className="text-white font-normal text-[14px]">24 Years</Text>
+            <Text className="text-white font-normal text-[14px]">{patientRecords.blood_group}</Text>
+              <Text className="text-white font-normal text-[14px]">{getAge(patientRecords.dob)} Years</Text>
             <TouchableOpacity onPress={handlePhonePress}>
               <Text className="text-white font-normal text-[14px]">
-                {phoneNumber}
+                {patientRecords.phone_number}
               </Text>
             </TouchableOpacity>
 
@@ -59,12 +178,12 @@ const patient = () => {
           </View>
         </View>
         <View>
-            <PatientSummary />
+            <PatientSummary summary={patientRecords.summary} />
         </View>
       </View>
 
       <View className="h-[50vh] ml-[-10px] bg-white flex justify-center gap-2 flex-col items-center">
-        <CalendarWithDots />
+        <CalendarWithDots markedDates={markedDates} />
       </View>
     </View>
   );
