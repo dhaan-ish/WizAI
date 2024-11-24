@@ -40,7 +40,8 @@ const home = () => {
         try {
           const { data, error } = await supabase
             .from('patients')
-            .select('unique_id, name, last_severity_score');
+            .select('unique_id, name, last_severity_score')
+            .order('last_severity_score', { ascending: false });
   
           if (error) {
             throw new Error(error.message);
@@ -74,7 +75,7 @@ const home = () => {
           const { data, error } = await supabase
             .from('patients')
             .insert([
-              { name: text, latitude : 12.971466, longitude : 80.042909, phone_number : phone, blood_group: blood, dob : dob, gender : gender }
+              { name: text, latitude : 12.971466, longitude : 80.042909, phone_number : phone, blood_group: blood, dob : dob, gender : gender, last_severity_score : 1, last_summary : "New Patient" }
             ]);
             console.log(data, error);  
             setTimeout(() => {

@@ -21,7 +21,8 @@ interface MarkedDate {
   marked: boolean;
   dotColor: string;
   selectedColor: string;
-  summary: string; // Summary is always a string, even if empty
+  summary: string;
+  image_links : string; // Summary is always a string, even if empty
 }
 
 interface MarkedDates {
@@ -91,7 +92,7 @@ const patient = () => {
         // Fetch data from the 'patient_records' table where unique_id = id
         const { data, error } = await supabase
           .from('patient_records')
-          .select('date, summary')
+          .select('date, summary, image_links')
           .eq('unique_id', id);  // Filter by unique_id
 
         if (error) {
@@ -110,7 +111,9 @@ const patient = () => {
             marked: true,
             dotColor: 'blue',
             selectedColor: 'blue',
-            summary: record.summary || '', // Empty string if no summary
+            summary: record.summary || '',
+            image_links : record.image_links || '', 
+            // Empty string if no summary
           };
         });
         // console.log(formattedDates);
@@ -183,7 +186,7 @@ const patient = () => {
       </View>
 
       <View className="h-[50vh] ml-[-10px] bg-white flex justify-center gap-2 flex-col items-center">
-        <CalendarWithDots markedDates={markedDates} />
+        <CalendarWithDots markedDates={markedDates} id={id} />
       </View>
     </View>
   );

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-nativewind-typescript-boilerplate",
-    "slug": "expo-nativewind-typescript-boilerplate",
+    "name": "wizai",
+    "slug": "wizai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,13 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.teczer.expo-nativewind-typescript-boilerplate"
+      "bundleIdentifier": "com.teczer.wizai"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tech.wizai"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +34,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "27481a06-935f-4b81-a2f2-e6eaf53e2bc9"
+      }
     }
   }
 }

@@ -3,23 +3,47 @@ import { View, Text, Modal, TouchableOpacity, Alert, Image, StyleSheet, TextInpu
 import { Calendar } from 'react-native-calendars';
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from 'expo-file-system';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import axios from 'axios';
+import PatientSummary from './PatientSummary';
 
-const CalendarWithDots = ({markedDates}) => {
+interface MarkedDate {
+  selected: boolean;
+  marked: boolean;
+  dotColor: string;
+  selectedColor: string;
+  summary: string;
+  image_links : string; // Summary is always a string, even if empty
+}
+
+interface CalendarWithDotsProps {
+  markedDates: Record<string, MarkedDate>;
+  id : number; // Same as MarkedDates
+}
+
+const CalendarWithDots: React.FC<CalendarWithDotsProps> = ({ markedDates, id }) => {
+  const duplicateMarkedDates = { ...markedDates };
   console.log(markedDates);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [todayModal, setShowTodayModal] = useState(false);
+  const [selectedImage1, setSelectedImage1] = useState<string | null>(null);
+
+  const handleImagePress = (link: string) => {
+    console.log(link);
+    setSelectedImage1(link); // Set the clicked image URL
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage1(null); // Close the modal by clearing the selected image
+  };
 
   const sendData = async () => {
     let s = await getBase64(file);
     console.log(s.length + "-> length");
     try {
-      // Send POST request with the array of texts to the Flask server
-      const response = await axios.post('http://172.16.11.217:5000/receive_texts', {
-        unique_id : 1,
+      const response = await axios.post('https://wizai-backend-psn3.onrender.com/receive_texts', {
+        unique_id : id,
         base64_image: s,
         doctor_summary : text,
       });
@@ -31,16 +55,18 @@ const CalendarWithDots = ({markedDates}) => {
 
   // Get today's date
   const today = new Date().toISOString().split('T')[0];
-  markedDates[today] = {
-    selected: true,
-    marked: true,
-    dotColor: 'red',
-    selectedColor: 'red',
-  };
+  // markedDates[today] = {
+  //   selected: true,
+  //   marked: true,
+  //   dotColor: 'red',
+  //   selectedColor: 'red',
+  //   summary : "",
+  // };
 
   const handleDateClick = (date: string) => {
     if (date === today) {
       setShowTodayModal(true);
+      setSelectedDate(date);
     } else if (markedDates[date]) {
       setSelectedDate(date);
       setIsModalVisible(true);
@@ -148,7 +174,7 @@ const CalendarWithDots = ({markedDates}) => {
         <View className="flex-1 justify-center items-center bg-black/50">
           <View className="w-4/5 p-6 bg-white rounded-lg items-center">
             <Text className="text-xl font-bold mb-4">{selectedDate}</Text>
-            {/* <Text className="text-base mb-3 text-center">{markedDates[selectedDate].summary}</Text> */}
+            <Text className="text-base mb-3 text-center">{markedDates[selectedDate]?.summary || 'No summary available'}</Text>
             <TouchableOpacity
               className="bg-blue-500 py-2 px-6 rounded-lg"
               onPress={() => setIsModalVisible(false)}
@@ -166,8 +192,16 @@ const CalendarWithDots = ({markedDates}) => {
       >
         <View className="flex-1 justify-center items-center bg-black/50">
         <View className="w-4/5 p-6 bg-white rounded-lg items-center">
+            <Text className="text-xl font-bold mb-4">{selectedDate}</Text>
+            <PatientSummary summary={duplicateMarkedDates[selectedDate]?.summary || 'No summary available'} />
+            {/* {duplicateMarkedDates[selectedDate]?.image_links?.map((link, index) => (
+              <TouchableOpacity key={index} onPress={() => handleImagePress(link)}>
+                <Image source={{ uri: link }} style={styles.image} />
+              </TouchableOpacity>
+            ))} */}
+            {/* <Text className="text-base mb-3 text-center">{}</Text> */}
             <Text style={styles.header}>
-                Add Image:
+                Add Report:
             </Text>
 
             {/* Button to choose an image */}
@@ -209,7 +243,18 @@ const CalendarWithDots = ({markedDates}) => {
         </View>
         </View>
       </Modal>
-
+      <Modal
+        visible={!!selectedImage1} // Modal is visible when selectedImage is not null
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseModal}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+        <View className="w-4/5 p-6 bg-white rounded-lg items-center">
+          <Image source={{ uri: selectedImage1 }} style={styles.image1} />
+        </View>
+        </View>
+      </Modal>
     
     </View>
   );
@@ -257,8 +302,35 @@ const styles = StyleSheet.create({
       height: 40,
       borderRadius: 8,
   },
+  image1: {
+    width: 400,
+    height: 400,
+    borderRadius: 8,
+  },
   errorText: {
       color: "red",
       marginTop: 16,
+  },
+  image: {
+    width: 100,  // Adjust as per your need
+    height: 100, // Adjust as per your need
+    margin: 10,
+    borderRadius: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
+  },
+  modalBackground: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  modalImage: {
+    width: '90%',
+    height: '80%',
+    resizeMode: 'contain',  // Ensures the image maintains its aspect ratio
   },
 });
