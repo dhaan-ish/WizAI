@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, TextInput, ScrollView} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, TextInput} from "react-native";
 import { Stack } from "expo-router";
 import SeverityCircle from "@/components/SeverityCircle";
 import { useNavigation } from "expo-router";
@@ -116,7 +116,7 @@ const home = () => {
                         </Text>
                     </View>
             </View>
-            <View className="h-[50vh] bg-white flex justify-start gap-1 flex-col items-center pt-[15%] overflow-y-scroll">
+            <View className="h-[50vh] bg-white flex justify-start gap-1 flex-col items-center pt-[15%]">
                 
                 {data.map((item) => (
                     <View className="">
