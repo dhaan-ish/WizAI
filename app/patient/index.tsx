@@ -9,7 +9,7 @@ import {
   Linking,
 } from "react-native";
 import { Stack } from "expo-router";
-import { useRoute } from '@react-navigation/native';
+import { useRoute } from "@react-navigation/native";
 import CalendarWithDots from "@/components/Calendat";
 import PatientSummary from "@/components/PatientSummary";
 
@@ -22,7 +22,7 @@ interface MarkedDate {
   dotColor: string;
   selectedColor: string;
   summary: string;
-  image_links : string; // Summary is always a string, even if empty
+  image_links: string; 
 }
 
 interface MarkedDates {
@@ -31,23 +31,30 @@ interface MarkedDates {
 
 const patient = () => {
   const route = useRoute();
-  const {id} = route.params;
-  const [patientRecords, setPatientRecords] = useState({name : "", dob : "", blood_group : "", phone_number : "", latitude : "", longitude : "",summary : ""});
+  const { id } = route.params;
+  const [patientRecords, setPatientRecords] = useState({
+    name: "",
+    dob: "",
+    blood_group: "",
+    phone_number: "",
+    latitude: "",
+    longitude: "",
+    summary: "",
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
         const { data, error } = await supabase
-          .from('patients')
-          .select('*')
-          .eq('unique_id', id);
+          .from("patients")
+          .select("*")
+          .eq("unique_id", id);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
           const patient = data[0];
-          console.log(patient); // This should print the patient object
           setPatientRecords({
             name: patient.name,
             dob: patient.dob,
@@ -57,11 +64,11 @@ const patient = () => {
             longitude: patient.longitude,
             gender: patient.gender,
             photo_url: patient.photo_url,
-            summary : patient.last_summary
+            summary: patient.last_summary,
           });
         }
       } catch (err) {
-        setError('Error fetching data');
+        setError("Error fetching data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -71,54 +78,47 @@ const patient = () => {
     fetchPatientData();
   }, [id]);
 
-  // Log the patientRecords after the state update
   useEffect(() => {
     console.log(patientRecords);
   }, [patientRecords]);
 
-
-  const phoneNumber = "+91 9876543210";
+  // const phoneNumber = "+91 9876543210";
   // const latitude = "13.095297792177373";
   // const longitude = "80.28600825704999";
   const handlePhonePress = () => {
     Linking.openURL(`tel:${patientRecords.phone_number}`);
   };
-  
-  const [markedDates, setMarkedDates] = useState<MarkedDates>({})
+
+  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
 
   useEffect(() => {
     const fetchMarkedDates = async () => {
       try {
-        // Fetch data from the 'patient_records' table where unique_id = id
         const { data, error } = await supabase
-          .from('patient_records')
-          .select('date, summary, image_links')
-          .eq('unique_id', id);  // Filter by unique_id
+          .from("patient_records")
+          .select("date, summary, image_links")
+          .eq("unique_id", id);
 
         if (error) {
           console.error("Error fetching data:", error);
           return;
         }
-
-        // Transform the fetched data into the format for markedDates
         const formattedDates = {};
 
         data.forEach((record) => {
-          const formattedDate = new Date(record.date).toISOString().split('T')[0]; // Format to 'yyyy-mm-dd'
+          const formattedDate = new Date(record.date)
+            .toISOString()
+            .split("T")[0];
 
           formattedDates[formattedDate] = {
             selected: true,
             marked: true,
-            dotColor: 'blue',
-            selectedColor: 'blue',
-            summary: record.summary || '',
-            image_links : record.image_links || '', 
-            // Empty string if no summary
+            dotColor: "blue",
+            selectedColor: "blue",
+            summary: record.summary || "",
+            image_links: record.image_links || "",
           };
         });
-        // console.log(formattedDates);
-
-        // Set the state with the formatted dates
         setMarkedDates(formattedDates);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -127,7 +127,7 @@ const patient = () => {
 
     fetchMarkedDates();
   }, [id]);
-  
+
   const handleLocationPress = () => {
     const url = `https://www.google.com/maps?q=${patientRecords.latitude},${patientRecords.longitude}`;
     Linking.openURL(url);
@@ -139,13 +139,14 @@ const patient = () => {
     let age = currentDate.getFullYear() - birthDate.getFullYear();
     const monthDifference = currentDate.getMonth() - birthDate.getMonth();
 
-    if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
+    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
 
-    // Format current date as yyyy-mm-dd
-    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-    
     return age;
   };
 
@@ -155,10 +156,14 @@ const patient = () => {
         <View className="flex justify-between items-center flex-row gap-20">
           <View className="flex justify-center gap-3 items-start flex-col ">
             <Text className="text-white font-normal text-[20px]">
-            {patientRecords.name}
+              {patientRecords.name}
             </Text>
-            <Text className="text-white font-normal text-[14px]">{patientRecords.blood_group}</Text>
-              <Text className="text-white font-normal text-[14px]">{getAge(patientRecords.dob)} Years</Text>
+            <Text className="text-white font-normal text-[14px]">
+              {patientRecords.blood_group}
+            </Text>
+            <Text className="text-white font-normal text-[14px]">
+              {getAge(patientRecords.dob)} Years
+            </Text>
             <TouchableOpacity onPress={handlePhonePress}>
               <Text className="text-white font-normal text-[14px]">
                 {patientRecords.phone_number}
@@ -181,7 +186,7 @@ const patient = () => {
           </View>
         </View>
         <View>
-            <PatientSummary summary={patientRecords.summary} />
+          <PatientSummary summary={patientRecords.summary} />
         </View>
       </View>
 

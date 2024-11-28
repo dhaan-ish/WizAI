@@ -11,9 +11,7 @@ import { useColorScheme } from "nativewind";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-
-
-import "../global.css"
+import "../global.css";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -58,10 +56,11 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
+        
         <Stack.Screen name="home" options={{ headerShown: false }} />
-        <Stack.Screen name="patient" options={{ headerShown: false }} /> 
+        <Stack.Screen name="patient" options={{ headerShown: false }} />
+        <Stack.Screen name="map" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );
 }
-
