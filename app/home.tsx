@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   Image,
@@ -10,17 +9,16 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { Stack } from "expo-router";
 import SeverityCircle from "@/components/SeverityCircle";
 import { useNavigation } from "expo-router";
 import supabase from "@/utils/supabase";
-import { setShouldAnimateExitingForTag } from "react-native-reanimated/lib/typescript/reanimated2/core";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const home = () => {
   const navigation = useNavigation();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<{ unique_id: string; name: string; last_severity_score: number }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [text, setText] = useState("");
   const [phone, setPhone] = useState("");
@@ -28,18 +26,18 @@ const home = () => {
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
 
-  const handlePhone = (input) => {
+  const handlePhone = (input: React.SetStateAction<string>) => {
     setPhone(input);
   };
-  const handleDob = (text) => {
+  const handleDob = (text: React.SetStateAction<string>) => {
     setDob(text);
   };
 
-  const handleBlood = (input) => {
+  const handleBlood = (input: React.SetStateAction<string>) => {
     setBlood(input);
   };
 
-  const handleGender = (input) => {
+  const handleGender = (input: React.SetStateAction<string>) => {
     setGender(input);
   };
 
@@ -56,7 +54,11 @@ const home = () => {
       console.log(data);
       setData(data);
     } catch (error) {
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError(String(error));
+      }
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,7 @@ const home = () => {
     return <Text>Loading...</Text>;
   }
 
-  const handleTextChange = (input) => {
+  const handleTextChange = (input: React.SetStateAction<string>) => {
     setText(input);
   };
 
@@ -133,9 +135,7 @@ const home = () => {
             <Text>Add Patient</Text>
           </TouchableOpacity>
         </View>
-        <View className="w-2 h-[95%] bg-[#F5F5F5]">
-          <Text></Text>
-        </View>
+        <View className="w-2 h-[95%] bg-[#F5F5F5]" />
         <View className="flex justify-start items-start flex-col pr-5">
           <Text className="font-medium text-[20px] ">{data.length}</Text>
           <Text className="text-[#A39E9E] font-normal text-[14px]">
@@ -143,34 +143,41 @@ const home = () => {
           </Text>
         </View>
       </View>
-      <View className="h-[50vh] bg-white flex justify-start gap-1 flex-col items-center pt-[15%] overflow-y-scroll">
-        {data.map((item) => (
-          <View className="">
-            <TouchableOpacity
-              className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
-              onPress={() =>
-                navigation.navigate("patient", { id: item.unique_id })
-              } // Navigate to the "patient" screen
-            >
-              <View className="flex justify-center flex-row gap-2 items-center">
-                <Image
-                  source={{
-                    uri: "https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png",
-                  }}
-                  className="h-[40px] w-[40px]"
-                />
-                <Text className="font-medium text-[16px]">{item.name}</Text>
-              </View>
-              <View className="flex justify-center items-center">
-                <SeverityCircle
-                  value={
-                    item.last_severity_score ? item.last_severity_score : 0
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        ))}
+      <LinearGradient
+        colors={['white', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        className="pt-4 absolute top-1/2 left-0 right-0 z-[5] h-20 flex-row justify-evenly items-center "
+        />
+      <ScrollView className="h-[50vh]">
+        <View className="h-full bg-white flex justify-start gap-1 flex-col pt-[15%]">
+          {data.map((item) => (
+            <View key={item.unique_id}>
+              <TouchableOpacity
+                className="w-[90vw] bg-white rounded-lg flex flex-row justify-between items-center shadow-lg shadow-black-500 py-3 px-2"
+                onPress={() =>
+                  navigation.navigate("patient", { id: item.unique_id })
+                }
+              >
+                <View className="flex justify-center flex-row gap-2 items-center">
+                  <Image
+                    source={{
+                      uri: "https://rjhiucwgtqbfccdwscfa.supabase.co/storage/v1/object/public/assets/user.png",
+                    }}
+                    className="h-[40px] w-[40px]"
+                  />
+                  <Text className="font-medium text-[16px]">{item.name}</Text>
+                </View>
+                <View className="flex justify-center items-center">
+                  <SeverityCircle
+                    value={item.last_severity_score ? item.last_severity_score : 0}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
 
         {/* <View className="">
                     <TouchableOpacity
@@ -251,7 +258,6 @@ const home = () => {
                         </View>
                     </TouchableOpacity>
                 </View> */}
-      </View>
       <Modal
         visible={showModal}
         transparent={true}
